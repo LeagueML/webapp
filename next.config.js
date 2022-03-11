@@ -8,8 +8,7 @@ const nextConfig = {
   },
   swcMinify: true,
   images: {
-    loader: 'custom',
-     cloudflareLoader
+    loader: 'custom'
   }
 };
 
