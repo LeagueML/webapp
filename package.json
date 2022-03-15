@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@league_ml/component-library.ui.button": "0.0.1",
+    "@league.ml/component-library": "1.0.2",
     "@urql/exchange-graphcache": "^4.3.6",
     "@urql/exchange-retry": "^0.3.2",
     "graphql": "^16.3.0",

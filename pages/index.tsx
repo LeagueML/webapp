@@ -2,7 +2,7 @@ import type { NextPage } from 'next'
 import Head from 'next/head'
 import Image from '../components/Image'
 import styles from '../styles/Home.module.css'
-import { Button } from '@league_ml/component-library.ui.button'
+import { Button } from '@league.ml/component-library'
 
 const Home: NextPage = () => {
   return (
