@@ -31,7 +31,7 @@ const Home: NextPage = () => {
             className={ styles.linkBadge } 
             href='https://github.com/LeagueML' 
             target='_blank'
-            rel="norefferer"
+            rel="noreferrer"
           >
             <BsGithub color='white' />
             <span className={ styles.link }>GitHub</span>
@@ -42,7 +42,7 @@ const Home: NextPage = () => {
             className={ styles.linkBadge } 
             href='https://api.league.ml/' 
             target='_blank' 
-            rel="norefferer"
+            rel="noreferrer"
           >
             <GrGraphQl color='white' />
             <span className={ styles.link }>API</span>
@@ -53,7 +53,7 @@ const Home: NextPage = () => {
             className={ styles.linkBadge } 
             href='https://components.league.ml/' 
             target='_blank' 
-            rel="norefferer"
+            rel="noreferrer"
           >
             <SiStorybook color='white' />
             <span className={ styles.link }>Components</span>
