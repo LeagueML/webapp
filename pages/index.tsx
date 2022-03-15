@@ -27,19 +27,34 @@ const Home: NextPage = () => {
       </div>
       <div className={ styles.firstFooter }>
         <div className={ styles.linkContainer }>
-          <a className={ styles.linkBadge } href='https://github.com/LeagueML' target='_blank'>
+          <a 
+            className={ styles.linkBadge } 
+            href='https://github.com/LeagueML' 
+            target='_blank'
+            rel="noopener"
+          >
             <BsGithub color='white' />
             <span className={ styles.link }>GitHub</span>
           </a>
         </div>
         <div className={ styles.linkContainer }>
-          <a className={ styles.linkBadge } href='https://api.league.ml/' target='_blank'>
+          <a 
+            className={ styles.linkBadge } 
+            href='https://api.league.ml/' 
+            target='_blank' 
+            rel="noopener"
+          >
             <GrGraphQl color='white' />
             <span className={ styles.link }>API</span>
           </a>
         </div>
         <div className={ styles.linkContainer }>
-          <a className={ styles.linkBadge } href='https://components.league.ml/' target='_blank'>
+          <a 
+            className={ styles.linkBadge } 
+            href='https://components.league.ml/' 
+            target='_blank' 
+            rel="noopener"
+          >
             <SiStorybook color='white' />
             <span className={ styles.link }>Components</span>
           </a>
