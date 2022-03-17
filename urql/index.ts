@@ -1,21 +1,23 @@
 import { Client, createClient, dedupExchange, Exchange, fetchExchange } from 'urql';
-import { offlineExchange } from '@urql/exchange-graphcache';
+import { cacheExchange, offlineExchange } from '@urql/exchange-graphcache';
 import { makeDefaultStorage } from '@urql/exchange-graphcache/default-storage';
 import { retryExchange } from '@urql/exchange-retry';
+import schema from './schema.json';
 
 class Urql {
     static Cache = class {
         static getStorage() : any {
-            return makeDefaultStorage({
-                idbName: 'graphcache-league.ml-v3', // The name of the IndexedDB database
-                maxAge: 30, // The maximum age of the persisted data in days
-            });
+            if (typeof window !== 'undefined') {
+                return makeDefaultStorage({
+                    idbName: 'graphcache-league.ml-v3', // The name of the IndexedDB database
+                    maxAge: 30, // The maximum age of the persisted data in days
+                });
+            }
+            return null;
         }
 
         static getSchema() : any {
-            return {
-
-            }
+            return schema;
         }
 
         static getMutationUpdates() : any
@@ -39,15 +41,28 @@ class Urql {
         }
 
         static getExchange() : Exchange {
-            return offlineExchange({
-                storage: this.getStorage(),
-                schema: this.getSchema(),
-                optimistic: this.getOptimisticUpdates(),
-                updates: {
-                    Mutation: this.getMutationUpdates(),
-                    Subscription: this.getSubscriptionUpdates()
-                }
-            });
+            const storage = this.getStorage();
+            if (storage) {
+                return offlineExchange({
+                    storage: this.getStorage(),
+                    schema: this.getSchema(),
+                    optimistic: this.getOptimisticUpdates(),
+                    updates: {
+                        Mutation: this.getMutationUpdates(),
+                        Subscription: this.getSubscriptionUpdates()
+                    }
+                });
+            }
+            else {
+                return cacheExchange({
+                    schema: this.getSchema(),
+                    optimistic: this.getOptimisticUpdates(),
+                    updates: {
+                        Mutation: this.getMutationUpdates(),
+                        Subscription: this.getSubscriptionUpdates()
+                    }
+                });
+            }
         }
     }
 

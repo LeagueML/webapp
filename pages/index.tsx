@@ -9,21 +9,9 @@ import { BsGithub } from 'react-icons/bs'
 import { GrGraphQl } from 'react-icons/gr'
 import { SiStorybook } from 'react-icons/si'
 
-const Home: NextPage = () => {
-  const platforms: Array<Platform> = [
-    { name: "North America", short: "NA", status: true },
-    { name: "Europe West", short: "EUW", status: true },
-    { name: "Europe Nordic & East", short: "EUNE", status: true },
-    { name: "Korea", short: "KR", status: true },
-    { name: "Brazil", short: "BR", status: true },
-    { name: "Japan", short: "JP", status: true },
-    { name: "Russia", short: "RU", status: true },
-    { name: "Oceania", short: "OCE", status: true },
-    { name: "Turkey", short: "TR", status: true },
-    { name: "Latin America North", short: "LAN", status: false },
-    { name: "Latin America South", short: "LAS", status: false },
-  ];
+import platforms from '../platforms';
 
+const Home: NextPage = () => {
   return (
     <div>
       <div className={ styles.header }>
@@ -37,7 +25,7 @@ const Home: NextPage = () => {
         <SummonerSearch
           initialPlatform={platforms[0]}
           platforms={platforms}
-          onSearch={ (name, _platform) => Router.push(`/summoner/${name}`) }
+          onSearch={ (name, platform) => Router.push(`/summoner/${platform.short.toLowerCase()}/${name}`) }
         />
       </div>
       <div className={ styles.firstFooter }>
