@@ -4,7 +4,7 @@ import Router from 'next/router';
 
 import styles from '../styles/Home.module.css';
 
-import { Platform, SummonerSearch } from '@league.ml/component-library';
+import { SummonerSearch } from '@league.ml/component-library';
 import { BsGithub } from 'react-icons/bs'
 import { GrGraphQl } from 'react-icons/gr'
 import { SiStorybook } from 'react-icons/si'
