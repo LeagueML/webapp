@@ -1,7 +1,7 @@
 lockfileVersion: 5.3
 
 specifiers:
-  '@league.ml/component-library': ^1.0.13
+  '@league.ml/component-library': ^1.0.23
   '@types/node': 17.0.21
   '@types/react': 17.0.40
   '@urql/exchange-graphcache': ^4.3.6
@@ -20,7 +20,7 @@ specifiers:
   urql: ^2.2.0
 
 dependencies:
-  '@league.ml/component-library': 1.0.13_react-dom@17.0.2+react@17.0.2
+  '@league.ml/component-library': 1.0.23_react-dom@17.0.2+react@17.0.2
   '@urql/exchange-graphcache': 4.3.6_graphql@16.3.0
   '@urql/exchange-retry': 0.3.2_graphql@16.3.0
   '@urql/introspection': 0.3.2_graphql@16.3.0
@@ -42,16 +42,16 @@ devDependencies:
 
 packages:
 
-  /@babel/runtime-corejs3/7.17.7:
-    resolution: {integrity: sha512-TvliGJjhxis5m7xIMvlXH/xG8Oa/LK0SCUCyfKD6nLi42n5fB4WibDJ0g9trmmBB6hwpMNx+Lzbxy9/4gpMaVw==}
+  /@babel/runtime-corejs3/7.17.8:
+    resolution: {integrity: sha512-ZbYSUvoSF6dXZmMl/CYTMOvzIFnbGfv4W3SEHYgMvNsFTeLaF2gkGAF4K2ddmtSK4Emej+0aYcnSC6N5dPCXUQ==}
     engines: {node: '>=6.9.0'}
     dependencies:
       core-js-pure: 3.21.1
       regenerator-runtime: 0.13.9
     dev: true
 
-  /@babel/runtime/7.17.7:
-    resolution: {integrity: sha512-L6rvG9GDxaLgFjg41K+5Yv9OMrU98sWe+Ykmc6FDJW/+vYZMhdOMKkISgzptMaERHvS2Y2lw9MDRm2gHhlQQoA==}
+  /@babel/runtime/7.17.8:
+    resolution: {integrity: sha512-dQpEpK0O9o6lj6oPu0gRDbbnk+4LeHlNcBpspf6Olzt3GIX4P1lWF1gS+pHLDFlaJvbR6q7jCfQ08zA4QJBnmA==}
     engines: {node: '>=6.9.0'}
     dependencies:
       regenerator-runtime: 0.13.9
@@ -62,7 +62,7 @@ packages:
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dependencies:
       ajv: 6.12.6
-      debug: 4.3.3
+      debug: 4.3.4
       espree: 9.3.1
       globals: 13.13.0
       ignore: 5.2.0
@@ -87,7 +87,7 @@ packages:
     engines: {node: '>=10.10.0'}
     dependencies:
       '@humanwhocodes/object-schema': 1.2.1
-      debug: 4.3.3
+      debug: 4.3.4
       minimatch: 3.1.2
     transitivePeerDependencies:
       - supports-color
@@ -97,8 +97,8 @@ packages:
     resolution: {integrity: sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==}
     dev: true
 
-  /@league.ml/component-library/1.0.13_react-dom@17.0.2+react@17.0.2:
-    resolution: {integrity: sha512-6wTX6OHZRTH5x0bbm0vzR/LNaEa/PfO/iUMd7hI3YHND6Fnet4W316q8N6k60Dahli5NApRiW9AXOq+XPO2+Og==}
+  /@league.ml/component-library/1.0.23_react-dom@17.0.2+react@17.0.2:
+    resolution: {integrity: sha512-KCIGjqo149n+YhbS3aFtyColQgM0BNJOPAVc6aGOXLv1LrTDIvT2RagLp0Gj2DGIGO2f39S+jDMON+QtNbVirQ==}
     peerDependencies:
       react: ^17
       react-dom: ^17
@@ -278,7 +278,7 @@ packages:
       '@typescript-eslint/scope-manager': 5.15.0
       '@typescript-eslint/types': 5.15.0
       '@typescript-eslint/typescript-estree': 5.15.0_typescript@4.6.2
-      debug: 4.3.3
+      debug: 4.3.4
       eslint: 8.10.0
       typescript: 4.6.2
     transitivePeerDependencies:
@@ -309,7 +309,7 @@ packages:
     dependencies:
       '@typescript-eslint/types': 5.15.0
       '@typescript-eslint/visitor-keys': 5.15.0
-      debug: 4.3.3
+      debug: 4.3.4
       globby: 11.1.0
       is-glob: 4.0.3
       semver: 7.3.5
@@ -424,8 +424,8 @@ packages:
     resolution: {integrity: sha512-o/HelwhuKpTj/frsOsbNLNgnNGVIFsVP/SW2BSF14gVl7kAfMOJ6/8wUAUvG1R1NHKrfG+2sHZTu0yauT1qBrA==}
     engines: {node: '>=6.0'}
     dependencies:
-      '@babel/runtime': 7.17.7
-      '@babel/runtime-corejs3': 7.17.7
+      '@babel/runtime': 7.17.8
+      '@babel/runtime-corejs3': 7.17.8
     dev: true
 
   /array-includes/3.1.4:
@@ -524,8 +524,8 @@ packages:
     engines: {node: '>=6'}
     dev: true
 
-  /caniuse-lite/1.0.30001317:
-    resolution: {integrity: sha512-xIZLh8gBm4dqNX0gkzrBeyI86J2eCjWzYAs40q88smG844YIrN4tVQl/RhquHvKEKImWWFIVh1Lxe5n1G/N+GQ==}
+  /caniuse-lite/1.0.30001319:
+    resolution: {integrity: sha512-xjlIAFHucBRSMUo1kb5D4LYgcN1M45qdKP++lhqowDpwJwGkpIRTt5qQqnhxjj1vHcI7nrJxWhCC1ATrCEBTcw==}
     dev: false
 
   /chalk/4.1.2:
@@ -620,8 +620,8 @@ packages:
       ms: 2.1.3
     dev: true
 
-  /debug/4.3.3:
-    resolution: {integrity: sha512-/zxw5+vh1Tfv+4Qn7a5nsbcJKPaSvCDhojn6FEl9vupwK2VCSDtEiEtqr8DFtzYFOdz63LBkxec7DYuc2jon6Q==}
+  /debug/4.3.4:
+    resolution: {integrity: sha512-PRWFHuSU3eDtQJPvnNY7Jcket1j0t5OuOsFzPPzsekD52Zl8qUfFIPEiswXqIvHWGVHOgX+7G/vCNNhehwxfkQ==}
     engines: {node: '>=6.0'}
     peerDependencies:
       supports-color: '*'
@@ -775,7 +775,7 @@ packages:
       eslint: '*'
       eslint-plugin-import: '*'
     dependencies:
-      debug: 4.3.3
+      debug: 4.3.4
       eslint: 8.10.0
       eslint-plugin-import: 2.25.4_eslint@8.10.0
       glob: 7.2.0
@@ -822,7 +822,7 @@ packages:
     peerDependencies:
       eslint: ^3 || ^4 || ^5 || ^6 || ^7 || ^8
     dependencies:
-      '@babel/runtime': 7.17.7
+      '@babel/runtime': 7.17.8
       aria-query: 4.2.2
       array-includes: 3.1.4
       ast-types-flow: 0.0.7
@@ -866,7 +866,7 @@ packages:
       prop-types: 15.8.1
       resolve: 2.0.0-next.3
       semver: 6.3.0
-      string.prototype.matchall: 4.0.6
+      string.prototype.matchall: 4.0.7
     dev: true
 
   /eslint-scope/7.1.1:
@@ -907,7 +907,7 @@ packages:
       ajv: 6.12.6
       chalk: 4.1.2
       cross-spawn: 7.0.3
-      debug: 4.3.3
+      debug: 4.3.4
       doctrine: 3.0.0
       escape-string-regexp: 4.0.0
       eslint-scope: 7.1.1
@@ -1505,7 +1505,7 @@ packages:
         optional: true
     dependencies:
       '@next/env': 12.1.0
-      caniuse-lite: 1.0.30001317
+      caniuse-lite: 1.0.30001319
       postcss: 8.4.5
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
@@ -1987,8 +1987,8 @@ packages:
       strip-ansi: 3.0.1
     dev: false
 
-  /string.prototype.matchall/4.0.6:
-    resolution: {integrity: sha512-6WgDX8HmQqvEd7J+G6VtAahhsQIssiZ8zl7zKh1VDMFyL3hRTJP4FTNA3RbIp2TOQ9AYNDcc7e3fH0Qbup+DBg==}
+  /string.prototype.matchall/4.0.7:
+    resolution: {integrity: sha512-f48okCX7JiwVi1NXCVWcFnZgADDC/n2vePlQ/KUCNqCikLLilQvwjMO8+BHVKvgzH0JB0J9LEPgxOGT02RoETg==}
     dependencies:
       call-bind: 1.0.2
       define-properties: 1.1.3
