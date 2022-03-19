@@ -3,13 +3,13 @@ const nextConfig = {
   reactStrictMode: true,
   compiler: {
     removeConsole: {
-      exclude: ['error'],
+      exclude: ["error"],
     },
   },
   swcMinify: true,
   images: {
-    loader: 'custom'
-  }
+    loader: "custom",
+  },
 };
 
 module.exports = nextConfig;
