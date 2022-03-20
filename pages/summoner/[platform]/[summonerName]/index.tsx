@@ -1,39 +1,61 @@
-import { useRouter } from 'next/router'
-import { ReactElement } from 'react';
-import MainLayout from '@/components/MainLayout';
-import platforms from 'platforms';
-import DefaultErrorPage from 'next/error';
-import Head from 'next/head';
-import SummonerQuickInfo from '@/components/SummonerQuickInfo';
+import { useRouter } from "next/router";
+import platforms from "platforms";
+import Head from "next/head";
+import SummonerQuickInfo from "@/components/SummonerQuickInfo";
+import { graphql } from "relay-runtime";
+import { RelayProps, withRelay } from "relay-nextjs";
+import { usePreloadedQuery } from "react-relay";
+import { LoadingCard } from "@league.ml/component-library";
+import { createServerEnvironment, getClientEnvironment } from "relay-stuff";
+import type { SummonerNameQuery } from "relay-stuff/__generated__/SummonerNameQuery.graphql";
 
-export default function Summoner() {
-  function parsePlatform(platform: string | string[] | undefined) : string | undefined {
-      if (typeof platform !== 'string') return undefined;
-      return platforms.find((p) => p.short.toLowerCase() === platform.toLowerCase())?.api;
+const PageQuery = graphql`
+  query SummonerNameQuery($platform: Platform!, $summonerName: String!) {
+    getSummonerByName(platform: $platform, name: $summonerName) {
+      name
+      platform
+      ...SummonerQuickInfo
+    }
+  }
+`;
+
+function Summoner({ preloadedQuery }: RelayProps<{}, SummonerNameQuery>) {
+  function parsePlatform(
+    platform: string | string[] | undefined
+  ): string | undefined {
+    if (typeof platform !== "string") return undefined;
+    return platforms.find(
+      (p) => p.short.toLowerCase() === platform.toLowerCase()
+    )?.api;
   }
 
-  const router = useRouter()
-  const { platform, summonerName } = router.query
-  const parsedPlatform = parsePlatform(platform);
+  const router = useRouter();
+  // const { platform, summonerName } = router.query;
+  // const parsedPlatform = parsePlatform(platform);
 
-  if (!parsedPlatform || typeof summonerName !== 'string')
-    return <><DefaultErrorPage statusCode={404} /></>
+  const query = usePreloadedQuery(PageQuery, preloadedQuery);
+  const title =
+    query.getSummonerByName?.name + " - " + query.getSummonerByName?.platform ??
+    "Loading";
 
-  return <>
-        <div>
-            <Head>
-                <title>{summonerName} - {platform}</title>
-                <link rel="icon" href="/favicon.ico" />
-            </Head>
-            <SummonerQuickInfo platform={parsedPlatform} summonerName={summonerName} />
-        </div>
+  return (
+    <>
+      <div>
+        <Head>
+          <title>{title}</title>
+          <link rel="icon" href="/favicon.ico" />
+        </Head>
+        <SummonerQuickInfo summoner={query.getSummonerByName!} />
+      </div>
     </>
+  );
 }
 
-Summoner.getLayout = function getLayout(page: ReactElement) {
-    return (
-      <MainLayout>
-        {page}
-      </MainLayout>
-    )
-  }
+export default withRelay(Summoner, PageQuery, {
+  fallback: <LoadingCard />,
+  createClientEnvironment: () => getClientEnvironment()!,
+  serverSideProps: async (ctx) => {
+    return {};
+  },
+  createServerEnvironment: async (ctx) => createServerEnvironment(),
+});

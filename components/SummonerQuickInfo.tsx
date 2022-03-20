@@ -1,40 +1,30 @@
-import { gql, useQuery } from 'urql'
-import GraphQLError from '@/components/GraphQLError';
+import { useFragment } from "react-relay";
+import { graphql } from "relay-runtime";
+import type { SummonerQuickInfo$key } from "relay-stuff/__generated__/SummonerQuickInfo.graphql";
 
-const query = gql`
-query ($platform: Platform!, $summonerName: String!) {
-    getSummonerByName(platform:$platform, name: $summonerName) {
-      profileIcon{
-        url
-      },
-      summonerLevel,
-      name,
-      platform
-    }
-}
+const fragment = graphql`
+  fragment SummonerQuickInfo on Summoner {
+    name
+    summonerLevel
+    platform
+  }
 `;
 
 export type SummonerQuickInfoProps = {
-    platform: string;
-    summonerName: string;
-}
+  summoner: SummonerQuickInfo$key;
+};
 
-export default function SummonerQuickInfo({platform, summonerName} : SummonerQuickInfoProps) {
+export default function SummonerQuickInfo({
+  summoner,
+}: SummonerQuickInfoProps) {
+  const data = useFragment(fragment, summoner);
 
-  const [result, reexecute] = useQuery({ query: query, variables: {
-        platform, summonerName
-    },
-  })
-  
-  const { data, fetching, error } = result
-
-  if (fetching) return <>Loading...</>
-  if (error) return <><GraphQLError error={error}></GraphQLError></>
-
-  return <>
-        <div>
-            <p>Summoner Name: {summonerName}</p>
-            <p>{JSON.stringify(data)}</p>
-        </div>
+  return (
+    <>
+      <div>
+        <p>Summoner Name: {data.name}</p>
+        <p>{JSON.stringify(data)}</p>
+      </div>
     </>
+  );
 }

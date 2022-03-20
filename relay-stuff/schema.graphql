@@ -1,0 +1,32 @@
+"""Exposes a URL that specifies the behavior of this scalar."""
+directive @specifiedBy(
+  """The URL that specifies the behavior of this scalar."""
+  url: String!
+) on SCALAR
+
+enum Platform {
+  EUW1
+  NA1
+}
+
+"""Represents a Profile Icon, as commonly seen next to a summoners name"""
+type ProfileIcon {
+  id: Int!
+  url: String!
+}
+
+type Query {
+  getSummonerByName(name: String!, platform: Platform!): Summoner
+  hello(name: String): String!
+  profileIconById(id: Int!): ProfileIcon!
+}
+
+"""Represents a summoner profile"""
+type Summoner {
+  id: ID!
+  name: String!
+  platform: Platform!
+  profileIcon: ProfileIcon!
+  summonerLevel: Int!
+}
+
