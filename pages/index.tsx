@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import Router from "next/router";
+import { useRouter } from "next/router";
 
 import styles from "../styles/Home.module.css";
 
@@ -12,6 +12,8 @@ import { SiStorybook } from "react-icons/si";
 import platforms from "../platforms";
 
 const Home: NextPage = () => {
+  const router = useRouter();
+
   return (
     <div>
       <div className={styles.header}>
@@ -26,7 +28,11 @@ const Home: NextPage = () => {
           initialPlatform={platforms[0]}
           platforms={platforms}
           onSearch={(name, platform) =>
-            Router.push(`/summoner/${platform.short.toLowerCase()}/${name}`)
+            router.push(
+              `/summoner/${
+                platforms.find((p) => platform.short === p.short)?.api
+              }/${name}`
+            )
           }
         />
       </div>
