@@ -14,13 +14,7 @@ export const meta: MetaFunction = () => {
 };
 
 export const links: LinksFunction = () => {
-  return [
-    { rel: "stylesheet", href: styles },
-    {
-      rel: "icon",
-      href: "/favicon.ico",
-    },
-  ];
+  return [{ rel: "stylesheet", href: styles }];
 };
 
 export default function Index() {

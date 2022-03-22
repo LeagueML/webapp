@@ -22,6 +22,7 @@ export default function App() {
         <Meta />
         <Links />
         <link rel="stylesheet" href={globalStyle} />
+        <link rel="favicon" href="/favicon.ico" />
       </head>
       <body>
         <Outlet />
