@@ -15,18 +15,10 @@ export async function executeQuery<T>(
 
   return response.json<GraphQLResponse<T>>();
 }
-
-export type SuccessfullGraphQLResponse<T> = {
-  data: T;
+export type GraphQLResponse<T> = {
+  data: T | null | undefined;
+  errors: GraphQLError[] | undefined;
 };
-
-export type ErroredGraphQLResponse = {
-  errors: GraphQLError[];
-};
-
-export type GraphQLResponse<T> =
-  | SuccessfullGraphQLResponse<T>
-  | ErroredGraphQLResponse;
 
 export type GraphQLError = {
   message: string;

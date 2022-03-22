@@ -5,6 +5,8 @@ import {
   useLoaderData,
   json,
   useParams,
+  LoaderFunction,
+  Outlet,
 } from "remix";
 import SummonerQuickInfo from "~/components/SummonerQuickInfo";
 import { executeQuery, GraphQLError } from "~/graphql";
@@ -22,13 +24,8 @@ const query = `
   }
 `;
 
-export let loader = async ({
+export const loader: LoaderFunction = async ({
   params: { platform, summonerName },
-}: {
-  params: {
-    platform: string;
-    summonerName: string;
-  };
 }) => {
   invariant(platform, "Expected platform");
   invariant(summonerName, "Expected summoner name");
@@ -37,7 +34,7 @@ export let loader = async ({
     name: summonerName,
   });
 
-  return json(response);
+  return json({ data: response.data, errors: response.errors });
 };
 
 export const meta: MetaFunction = () => {
