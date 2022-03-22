@@ -10,7 +10,7 @@
     "dev:wrangler": "cross-env NODE_ENV=development wrangler pages dev ./public",
     "dev": "remix build && run-p dev:*",
     "postinstall": "remix setup cloudflare-pages",
-    "start": "cross-env NODE_ENV=production npm run dev:wrangler"
+    "start": "cross-env NODE_ENV=production pnpm run dev:wrangler"
   },
   "dependencies": {
     "@league.ml/component-library": "^1.0.24",
