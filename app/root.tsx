@@ -7,6 +7,7 @@ import {
   ScrollRestoration,
 } from "remix";
 import type { MetaFunction } from "remix";
+import globalStyle from "~/styles/global.css";
 
 export const meta: MetaFunction = () => ({
   charset: "utf-8",
@@ -20,7 +21,7 @@ export default function App() {
       <head>
         <Meta />
         <Links />
-        <link rel="stylesheet" href="global.css" />
+        <link rel="stylesheet" href={globalStyle} />
       </head>
       <body>
         <Outlet />
