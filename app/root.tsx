@@ -20,6 +20,7 @@ export default function App() {
       <head>
         <Meta />
         <Links />
+        <link rel="stylesheet" href="global.css" />
       </head>
       <body>
         <Outlet />

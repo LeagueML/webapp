@@ -1,32 +1,87 @@
+import { SummonerSearch } from "@league.ml/component-library";
+import styles from "~/styles/landing.css";
+import { BsGithub } from "react-icons/bs";
+import { GrGraphQl } from "react-icons/gr";
+import { SiStorybook } from "react-icons/si";
+import { LinksFunction, MetaFunction, useNavigate } from "remix";
+
+import platforms from "~/platforms";
+
+export const meta: MetaFunction = () => {
+  return {
+    title: "LEAGUE.ML",
+  };
+};
+
+export const links: LinksFunction = () => {
+  return [
+    { rel: "stylesheet", href: styles },
+    {
+      rel: "icon",
+      href: "/favicon.ico",
+    },
+  ];
+};
+
 export default function Index() {
+  const navigate = useNavigate();
+
   return (
-    <div style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.4" }}>
-      <h1>Welcome to Remix</h1>
-      <ul>
-        <li>
+    <div>
+      <div className="header">
+        <span className="title">LEAGUE.ML</span>
+      </div>
+      <div className="main">
+        <SummonerSearch
+          initialPlatform={platforms[0]}
+          platforms={platforms}
+          onSearch={(name, platform) =>
+            navigate(
+              `/summoner/${
+                platforms.find((p) => platform.short === p.short)?.api
+              }/${name}`
+            )
+          }
+        />
+      </div>
+      <div className="firstFooter">
+        <div className="linkContainer">
           <a
+            className="linkBadge"
+            href="https://github.com/LeagueML"
             target="_blank"
-            href="https://remix.run/tutorials/blog"
             rel="noreferrer"
           >
-            15m Quickstart Blog Tutorial
+            <BsGithub color="white" />
+            <span className="link">GitHub</span>
           </a>
-        </li>
-        <li>
+        </div>
+        <div className="linkContainer">
           <a
+            className="linkBadge"
+            href="https://api.league.ml/"
             target="_blank"
-            href="https://remix.run/tutorials/jokes"
             rel="noreferrer"
           >
-            Deep Dive Jokes App Tutorial
+            <GrGraphQl color="white" />
+            <span className="link">API</span>
           </a>
-        </li>
-        <li>
-          <a target="_blank" href="https://remix.run/docs" rel="noreferrer">
-            Remix Docs
+        </div>
+        <div className="linkContainer">
+          <a
+            className="linkBadge"
+            href="https://components.league.ml/"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <SiStorybook color="white" />
+            <span className="link">Components</span>
           </a>
-        </li>
-      </ul>
+        </div>
+      </div>
+      <div className="secondFooter">
+        <span className="copyright">Copyright © 2022 LEAGUE.ML</span>
+      </div>
     </div>
   );
 }
