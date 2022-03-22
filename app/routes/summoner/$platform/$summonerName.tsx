@@ -1,3 +1,4 @@
+import invariant from "tiny-invariant";
 import {
   LinksFunction,
   MetaFunction,
@@ -29,6 +30,8 @@ export let loader = async ({
     summonerName: string;
   };
 }) => {
+  invariant(platform, "Expected platform");
+  invariant(summonerName, "Expected summoner name");
   const response = await executeQuery(query, {
     platform: platform,
     name: summonerName,
