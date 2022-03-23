@@ -1,0 +1,15 @@
+.grid {
+  width: 100%;
+  height: 100%;
+}
+
+.grid > .grid-element {
+  border-radius: 5%;
+  border: 3px dotted black;
+}
+
+.grid > .placeholder {
+  background: linear-gradient(50turn, red, white, red);
+  border-radius: 5%;
+  border: 3px dotted black;
+}
