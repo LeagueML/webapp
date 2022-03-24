@@ -43,7 +43,7 @@ export default function GridTest() {
             }}
           ></div>
         </GridElement>*/}
-        {[...Array(100000)].map((_, i) => (
+        {[...Array(1000)].map((_, i) => (
           <GridElement
             key={"generated-" + i}
             x={undefined}
