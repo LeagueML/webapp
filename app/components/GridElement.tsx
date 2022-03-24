@@ -1,8 +1,12 @@
 import { PropsWithChildren } from "react";
-import { DynamicGridElement, StaticGridElement } from "./Grid";
 
-export type GridElementProps = StaticGridElement | DynamicGridElement;
-
-export default function Element(props: PropsWithChildren<GridElementProps>) {
+export default function Element(
+  props: PropsWithChildren<{
+    x: number | undefined;
+    y: number | undefined;
+    w: number;
+    h: number;
+  }>
+) {
   return <>{props.children}</>;
 }

@@ -1,19 +1,14 @@
-import { ReactElement } from "react";
+import React, { ReactChild } from "react";
 import {
   CSSProperties,
-  MutableRefObject,
   PropsWithChildren,
-  ReactNode,
   RefObject,
   useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
   useState,
 } from "react";
 import { LinksFunction } from "remix";
 import styles from "~/styles/grid.css";
-import { GridElementProps } from "./GridElement";
+import flattenChildren from "react-keyed-flatten-children";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -47,72 +42,36 @@ export const useContainerDimensions = (myRef: RefObject<HTMLDivElement>) => {
   return dimensions;
 };
 
-type GridElement = { props: GridElementProps };
+export type GridProps = PropsWithChildren<{
+  rows: number | undefined;
+  cols: number;
+}>;
 
-export type GridProps = {
-  children: GridElement[];
-};
-
-export type StaticGridElement = {
-  x: number;
-  y: number;
-  w: number;
-  h: number;
-};
-
-export type DynamicGridElement = {
-  w: number;
-  h: number;
+type LayedOutElement = {
+  index: number;
+  static: boolean;
+  startX: number;
+  startY: number;
+  endX: number;
+  endY: number;
 };
 
 function calculateLayout(
-  maxRows: number,
-  elements: GridElement[]
-): ReactNode[] {
-  function buildDiv(
-    element: ReactNode,
-    x: number,
-    y: number,
-    w: number,
-    h: number
-  ): ReactNode {
-    const style: CSSProperties = {
-      gridRowStart: x,
-      gridRowEnd: x + w,
-      gridColumnStart: y,
-      gridColumnEnd: y + h,
-    };
+  maxRows: number | undefined,
+  maxCols: number,
+  children: readonly ReactChild[]
+): LayedOutElement[] {
+  let layedOut: LayedOutElement[] = [];
+  let rows: Boolean[][] = [];
 
-    return (
-      <div className="grid-element" style={style}>
-        {element}
-      </div>
-    );
-  }
+  const start = Date.now();
 
-  if (maxRows <= 0) {
-    const serverSideStyle: CSSProperties = {
-      visibility: "hidden",
-      gridRowStart: 0,
-      gridRowEnd: 0,
-      gridColumnStart: 0,
-      gridColumnEnd: 0,
-    };
-    // server side layout:
-    return elements.map((e, i) => (
-      <div key={i} className="grid-element" style={serverSideStyle}>
-        {e}
-      </div>
-    ));
-  }
-
-  let layedOut: ReactNode[] = [];
-  let cols: Boolean[][] = [];
-
-  console.debug(`Beginning Layout ${maxRows}`);
+  console.debug(`Beginning Layout ${maxCols}`);
 
   // first we look for all static elements and lay them out
-  elements.forEach((e: GridElement) => {
+  children.forEach((e: ReactChild, i: number) => {
+    if (!React.isValidElement(e)) return;
+
     if (!e) {
       console.log("Skipping empty layout element");
       return;
@@ -120,76 +79,172 @@ function calculateLayout(
 
     const element = e.props;
 
+    if (!("h" in element && "w" in element)) {
+      throw new Error("skipping invalid child. No width or height.");
+    }
+
     // if static element
-    if ("x" in element && "y" in element) {
-      while (cols.length <= element.y + element.y) {
-        cols.push(new Array(maxRows));
+    if ("x" in element && element.x && "y" in element && element.y) {
+      // check for static element going out of bounds
+      if (maxRows && element.y + element.h > maxRows) {
+        console.warn(
+          `rejecting static element @ ${element.x}, ${element.y} because it's too tall`
+        );
+        return;
       }
 
-      console.debug(
-        `laying out static element ${JSON.stringify(element)} ${cols.length}`
-      );
+      // lengthen work area to fit child
+      while (rows.length < element.y + element.h) {
+        rows.push(new Array(maxCols));
+      }
+
+      // set used fields to true
       for (let y = 0; y < element.h; y++) {
-        const col = cols[y + element.y];
+        const row = rows[y + element.y];
         for (let x = 0; x < element.w; x++) {
-          console.debug(
-            `checking ${element.x + x}, ${element.y + y} (${col.length})`
-          );
-          if (col[x + element.x] === true)
+          if (row[x + element.x] === true)
             console.debug(
               `Detected Overlap at ${element.x + x}, ${element.y + y}`
             );
-          col[x + element.x] = true;
+          row[x + element.x] = true;
         }
       }
 
       // element is fully layed out. Export
-      layedOut.push(
-        buildDiv(element, element.x, element.y, element.w, element.h)
-      );
+      layedOut.push({
+        static: true,
+        index: i,
+        startX: element.x,
+        endX: element.x + element.w,
+        startY: element.y,
+        endY: element.y + element.h,
+      });
     }
   });
 
-  elements.forEach((e: GridElement) => {
+  let currentRow = 0;
+  let currentCol = 0;
+  // next layout all dynamic children
+  children.forEach((e: ReactChild, i: number) => {
+    if (!React.isValidElement(e)) return;
+
     if (!e) {
       console.log("Skipping empty layout element");
       return;
     }
 
-    const element = e.props;
+    const elementa = e.props;
+
+    if (!("h" in elementa && elementa.h && "w" in elementa && elementa.w)) {
+      throw new Error("skipping invalid child. No width or height.");
+    }
 
     // if static element
-    if ("x" in element) {
+    if ("x" in elementa && elementa.x && "y" in elementa && elementa.y) {
       return;
     }
 
-    // layout dynamic element
-    console.error("Found dynamic element!");
+    const element: { w: number; h: number } = elementa;
+
+    if (element.w > maxCols || (maxRows && element.h > maxRows)) {
+      console.warn(
+        `rejecting dynamic element because it can never fit within the current bounds of the grid`
+      );
+      return;
+    }
+
+    // retry layouting until we either find a spot or reject the element
+    while (true) {
+      // check whether this element will fit at the end of the current row
+      if (currentCol + element.w > maxCols) {
+        currentRow++;
+        currentCol = 0;
+      }
+
+      if (maxRows && maxRows < currentRow + element.h) {
+        console.warn(`rejecting dynamic element because it's too tall`);
+        return;
+      }
+
+      while (rows.length < currentRow + element.h) {
+        rows.push(new Array(maxCols));
+      }
+
+      let fit = true;
+      for (let y = 0; y < element.h; y++) {
+        const row = rows[y + currentRow];
+        for (let x = 0; x < element.w; x++) {
+          if (row[x + currentCol] === true) {
+            fit = false;
+            break;
+          }
+        }
+        if (!fit) break;
+      }
+      if (fit) {
+        for (let y = 0; y < element.h; y++) {
+          const row = rows[y + currentRow];
+          for (let x = 0; x < element.w; x++) {
+            row[x + currentCol] = true;
+          }
+        }
+        break;
+      }
+      currentCol++;
+    }
+
+    layedOut.push({
+      static: false,
+      index: i,
+      startX: currentCol,
+      endX: currentCol + element.w,
+      startY: currentRow,
+      endY: currentRow + element.h,
+    });
+    currentCol++;
   });
 
+  const end = Date.now();
+  console.log(
+    `Done layout. ${layedOut.length} committed. Took ${end - start}ms`
+  );
   return layedOut;
 }
 
 export default function Grid(props: GridProps) {
-  const componentRef = useRef() as MutableRefObject<HTMLDivElement>;
-  const { width, height } = useContainerDimensions(componentRef);
-  const [rows, setRows] = useState(0);
-  useEffect(() => {
-    setRows(Math.floor(width / 60));
-  }, [width]);
+  let layout: LayedOutElement[];
+  if (!props.children) return <div className="grid"></div>;
+  const children = flattenChildren(props.children);
 
-  const layout: ReactNode[] = useMemo(() => {
-    if (!props.children) return [];
-    return calculateLayout(rows, props.children);
-  }, [rows, props.children]);
+  layout = calculateLayout(props.rows, props.cols, children);
+  console.log(JSON.stringify(layout));
+
+  const gridStyle: CSSProperties = {
+    gridTemplateColumns: "repeat(" + props.cols + "," + 100 / props.cols + "%)",
+    gridAutoRows: 100 / props.cols + "%",
+    //grid-template-rows: 50px;
+    //grid-template-columns: 50px;
+    //gap: 10px;
+  };
 
   return (
-    <div className="grid" ref={componentRef}>
-      H: {width}, W: {height}
-      <br />
-      R: {rows}
-      <hr />
-      {layout}
-    </div>
+    <>
+      <div className="grid" style={gridStyle}>
+        {layout.map((l) => (
+          <div
+            key={`${l.startX}/${l.endX}-${l.startY}/${l.endY}`}
+            className={"grid-element" + (l.static ? " static" : "")}
+            style={{
+              gridColumnStart: 1 + l.startX,
+              gridColumnEnd: 1 + l.endX,
+              gridRowStart: 1 + l.startY,
+              gridRowEnd: 1 + l.endY,
+            }}
+          >
+            {children[l.index]}
+          </div>
+        ))}
+      </div>
+    </>
   );
 }

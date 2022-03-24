@@ -1,11 +1,16 @@
 .grid {
   width: 100%;
   height: 100%;
+  display: grid;
 }
 
 .grid > .grid-element {
   border-radius: 5%;
-  border: 3px dotted black;
+  overflow: hidden;
+}
+
+.grid > .static {
+  border: 3px solid black;
 }
 
 .grid > .placeholder {

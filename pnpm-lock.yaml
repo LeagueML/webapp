@@ -12,9 +12,11 @@ specifiers:
   cross-env: ^7.0.3
   eslint: ^8.11.0
   npm-run-all: ^4.1.5
+  rand-seed: ^1.0.1
   react: ^17.0.2
   react-dom: ^17.0.2
   react-icons: ^4.3.1
+  react-keyed-flatten-children: ^1.3.0
   remix: ^1.3.2
   tiny-invariant: ^1.2.0
   typescript: ^4.5.5
@@ -25,9 +27,11 @@ dependencies:
   '@remix-run/cloudflare-pages': 1.3.2_abc5c18a24dffdd7ae2647150b801da6
   '@remix-run/react': 1.3.2_react-dom@17.0.2+react@17.0.2
   cross-env: 7.0.3
+  rand-seed: 1.0.1
   react: 17.0.2
   react-dom: 17.0.2_react@17.0.2
   react-icons: 4.3.1_react@17.0.2
+  react-keyed-flatten-children: 1.3.0_react@17.0.2
   remix: 1.3.2
   tiny-invariant: 1.2.0
 
@@ -4521,6 +4525,10 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
+  /rand-seed/1.0.1:
+    resolution: {integrity: sha512-g7uUh6C01OTozmt/ZqmzY8dTPW06je4aEiVp/8Hv213vMySW4usQFMvNiaDp5Vw0i7oZYl0zpao2YuUvvSjIkA==}
+    dev: false
+
   /react-dom/17.0.2_react@17.0.2:
     resolution: {integrity: sha512-s4h96KtLDUQlsENhMn1ar8t2bEa+q/YAtj8pPPdIjPDGBDIVNsrD9aXNWqspUe6AzKCIG0C1HZZLqLV7qpOBGA==}
     peerDependencies:
@@ -4542,11 +4550,19 @@ packages:
 
   /react-is/16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
-    dev: true
 
   /react-is/17.0.2:
     resolution: {integrity: sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==}
     dev: true
+
+  /react-keyed-flatten-children/1.3.0_react@17.0.2:
+    resolution: {integrity: sha512-qB7A6n+NHU0x88qTZGAJw6dsqwI941jcRPBB640c/CyWqjPQQ+YUmXOuzPziuHb7iqplM3xksWAbGYwkQT0tXA==}
+    peerDependencies:
+      react: '>=15.0.0'
+    dependencies:
+      react: 17.0.2
+      react-is: 16.13.1
+    dev: false
 
   /react-router-dom/6.2.2_react-dom@17.0.2+react@17.0.2:
     resolution: {integrity: sha512-AtYEsAST7bDD4dLSQHDnk/qxWLJdad5t1HFa1qJyUrCeGgEuCSw0VB/27ARbF9Fi/W5598ujvJOm3ujUCVzuYQ==}
