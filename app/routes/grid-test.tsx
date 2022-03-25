@@ -43,13 +43,13 @@ export default function GridTest() {
             }}
           ></div>
         </GridElement>*/}
-        {[...Array(1000)].map((_, i) => (
+        {[...Array(500)].map((_, i) => (
           <GridElement
             key={"generated-" + i}
             x={undefined}
             y={undefined}
-            w={1 + Math.floor(myrng.next() * 29)}
-            h={1 + Math.floor(myrng.next() * 29)}
+            w={5 + Math.floor(myrng.next() * 35)}
+            h={5 + Math.floor(myrng.next() * 25)}
           >
             <div
               key={"generated-div-" + i}
@@ -58,8 +58,15 @@ export default function GridTest() {
                   "hsl(" + Math.floor(myrng.next() * 360) + "deg 100% 50%)",
                 width: "100%",
                 height: "100%",
+                justifyContent: "center",
+                alignContent: "center",
+                textAlign: "center",
+                alignItems: "center",
+                display: "inline-flex",
               }}
-            ></div>
+            >
+              {i}
+            </div>
           </GridElement>
         ))}
       </Grid>
