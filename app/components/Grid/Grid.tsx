@@ -5,7 +5,6 @@ import styles from "~/styles/grid.css";
 import flattenChildren from "react-keyed-flatten-children";
 import { GridProps, LayedOutElement } from "./Grid.types";
 import { calculateLayout } from "./Grid.layout";
-import { dynamicLayoutBasicTopLeftForwardOnly } from "./DynamicLayoutTopLeft";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -45,12 +44,11 @@ export default function Grid(props: GridProps) {
   const children = flattenChildren(props.children);
 
   layout = calculateLayout(
-    dynamicLayoutBasicTopLeftForwardOnly,
+    props.layoutStrategy,
     props.rows,
     props.cols,
     children
   );
-  console.log(JSON.stringify(layout));
 
   const gridStyle: CSSProperties = {
     gridTemplateColumns:

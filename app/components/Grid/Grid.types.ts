@@ -3,6 +3,7 @@ import { PropsWithChildren, ReactChild } from "react";
 export type GridProps = PropsWithChildren<{
   rows: number | undefined;
   cols: number;
+  layoutStrategy: DynamicLayout;
 }>;
 
 export type LayedOutElement = {
