@@ -9,7 +9,7 @@ export function calculateLayout(
   maxCols: number,
   children: readonly ReactChild[]
 ): LayedOutElement[] {
-  let layedOut: LayedOutElement[] = [];
+  let layedOut: LayedOutElement[] = new Array(children.length);
   let rows: Boolean[][] = [];
 
   const start = Date.now();
@@ -59,14 +59,14 @@ export function calculateLayout(
       }
 
       // element is fully layed out. Export
-      layedOut.push({
+      layedOut[i] = {
         static: true,
         index: i,
         startX: element.x,
         endX: element.x + element.w,
         startY: element.y,
         endY: element.y + element.h,
-      });
+      };
     }
   });
 

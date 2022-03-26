@@ -39,11 +39,10 @@ export const useContainerDimensions = (myRef: RefObject<HTMLDivElement>) => {
   return dimensions;
 };*/
 export default function Grid(props: GridProps) {
-  let layout: LayedOutElement[];
   if (!props.children) return <div className="grid"></div>;
   const children = flattenChildren(props.children);
 
-  layout = calculateLayout(
+  const layout = calculateLayout(
     props.layoutStrategy,
     props.rows,
     props.cols,
@@ -74,7 +73,7 @@ export default function Grid(props: GridProps) {
               gridRowEnd: 1 + l.endY,
             }}
           >
-            {children[l.index]}
+            {children[l.index] ?? <></>}
           </div>
         ))}
       </div>

@@ -27,6 +27,7 @@ const topLeftTemplate =
     let currentCol = 0;
     // next layout all dynamic children
     children.forEach((e: ReactChild, i: number) => {
+      if (layedOut[i]) return;
       if (!React.isValidElement(e)) return;
 
       if (!e) {
@@ -122,14 +123,14 @@ const topLeftTemplate =
             }
           }
           console.debug(`Comitting Final Layout.`);
-          layedOut.push({
+          layedOut[i] = {
             static: false,
             index: i,
             startX: currentCol,
             endX: currentCol + element.w,
             startY: currentRow,
             endY: currentRow + element.h,
-          });
+          };
           if (forwardOnly) {
             currentCol++;
           } else {

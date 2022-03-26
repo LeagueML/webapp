@@ -1,8 +1,8 @@
 import { LinksFunction } from "remix";
 import Grid, {
   links as GridLinks,
-  dynamicLayoutTopLeftForwardOnlyCompacting,
-  dynamicLayoutTopLeftForwardOnly,
+  topLeftForwardOnly,
+  topLeftForwardOnlyCompacting,
 } from "~/components/Grid";
 import GridElement from "~/components/GridElement";
 import Rand from "rand-seed";
@@ -17,7 +17,7 @@ export default function GridTest() {
   return (
     <div style={{ width: "100%", height: "100%" }}>
       <Grid
-        layoutStrategy={dynamicLayoutTopLeftForwardOnlyCompacting}
+        layoutStrategy={topLeftForwardOnlyCompacting}
         cols={100}
         rows={undefined}
       >
