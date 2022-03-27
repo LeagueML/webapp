@@ -1,6 +1,9 @@
-import React from "react";
-import { ReactChild } from "react";
-import { DynamicLayout, LayedOutElement } from "./Grid.types";
+import {
+  DynamicLayoutIteration,
+  LayedOutElement,
+  DynamicElement,
+  LayoutState,
+} from "./Grid.types";
 
 /* DESCRIPTION:
  * This is a super basic layout made for initial testing
@@ -14,152 +17,138 @@ import { DynamicLayout, LayedOutElement } from "./Grid.types";
  * which can help a tiny bit with compaction, especially around static elements.
  */
 const topLeftTemplate =
-  (forwardOnly: Boolean, compactUpwards: Boolean): DynamicLayout =>
+  (forwardOnly: Boolean, compactUpwards: Boolean): DynamicLayoutIteration =>
   (
-    children: readonly ReactChild[],
-    maxCols: number,
+    element: DynamicElement,
+    elementIndex: number,
+    state: LayoutState,
     maxRows: number | undefined,
-    rows: Boolean[][],
-    layedOut: LayedOutElement[]
-  ) => {
-    let totalCompacted = 0;
-    let currentRow = 0;
-    let currentCol = 0;
-    // next layout all dynamic children
-    children.forEach((e: ReactChild, i: number) => {
-      if (layedOut[i]) return;
-      if (!React.isValidElement(e)) return;
+    maxCols: number
+  ): LayoutState => {
+    if (element.w > maxCols || (maxRows && element.h > maxRows)) {
+      console.warn(
+        `rejecting dynamic element because it can never fit within the current bounds of the grid`
+      );
+      return state;
+    }
 
-      if (!e) {
-        console.log("Skipping empty layout element");
-        return;
+    let currentCol = state.currentCol;
+    let currentRow = state.currentRow;
+    const rows = [...state.rows].map((r, i) => [...state.rows[i]]);
+    const layout = [...state.layout];
+
+    /*console.debug(
+      `Beginning Layout ${elementIndex} ${currentCol} ${currentRow}`
+    );*/
+    // retry layouting until we either find a spot or reject the element
+    while (true) {
+      // check whether this element will fit at the end of the current row
+      if (currentCol + element.w > maxCols) {
+        currentRow++;
+        currentCol = 0;
       }
 
-      const elementa = e.props;
-
-      if (!("h" in elementa && elementa.h && "w" in elementa && elementa.w)) {
-        throw new Error("skipping invalid child. No width or height.");
+      if (maxRows && maxRows < currentRow + element.h) {
+        console.warn(`rejecting dynamic element because it's too tall`);
+        return state;
       }
 
-      // if static element
-      if ("x" in elementa && elementa.x && "y" in elementa && elementa.y) {
-        return;
+      while (rows.length < currentRow + element.h) {
+        rows.push(new Array(maxCols));
       }
 
-      const element: { w: number; h: number } = elementa;
-
-      if (element.w > maxCols || (maxRows && element.h > maxRows)) {
-        console.warn(
-          `rejecting dynamic element because it can never fit within the current bounds of the grid`
-        );
-        return;
-      }
-
-      console.debug(`Beginning Layout ${i}`);
-      // retry layouting until we either find a spot or reject the element
-      while (true) {
-        // check whether this element will fit at the end of the current row
-        if (currentCol + element.w > maxCols) {
-          currentRow++;
-          currentCol = 0;
+      let fit = true;
+      for (let y = 0; y < element.h; y++) {
+        const row = rows[y + currentRow];
+        for (let x = 0; x < element.w; x++) {
+          if (row[x + currentCol] === true) {
+            fit = false;
+            break;
+          }
         }
-
-        if (maxRows && maxRows < currentRow + element.h) {
-          console.warn(`rejecting dynamic element because it's too tall`);
-          return;
-        }
-
-        while (rows.length < currentRow + element.h) {
-          rows.push(new Array(maxCols));
-        }
-
-        let fit = true;
-        for (let y = 0; y < element.h; y++) {
-          const row = rows[y + currentRow];
-          for (let x = 0; x < element.w; x++) {
-            if (row[x + currentCol] === true) {
-              fit = false;
+        if (!fit) break;
+      }
+      if (fit) {
+        // console.debug(`Found Spot. Doing post-layout work.`);
+        const tempCurrentRow = currentRow;
+        if (compactUpwards) {
+          console.debug(`Compacting upwards at ${currentRow}, ${currentCol}`);
+          while (true) {
+            currentRow--;
+            console.debug(`Checking row ${currentRow}`);
+            if (currentRow < 0) {
+              console.debug(`Hit floor`);
+              currentRow = 0;
+              break;
+            }
+            let stillFit = true;
+            const row = rows[currentRow];
+            for (let x = 0; x < element.w; x++) {
+              if (row[x + currentCol] === true) {
+                stillFit = false;
+                break;
+              }
+            }
+            if (!stillFit) {
+              currentRow++;
+              console.debug(`Done compacting. Pushed until ${currentRow}`);
               break;
             }
           }
-          if (!fit) break;
         }
-        if (fit) {
-          console.debug(`Found Spot. Doing post-layout work.`);
-          const tempCurrentRow = currentRow;
-          if (compactUpwards) {
-            console.debug(`Compacting upwards at ${currentRow}, ${currentCol}`);
-            while (true) {
-              currentRow--;
-              console.debug(`Checking row ${currentRow}`);
-              if (currentRow < 0) {
-                console.debug(`Hit floor`);
-                currentRow = 0;
-                break;
-              }
-              let stillFit = true;
-              const row = rows[currentRow];
-              for (let x = 0; x < element.w; x++) {
-                if (row[x + currentCol] === true) {
-                  stillFit = false;
-                  break;
-                }
-              }
-              if (!stillFit) {
-                currentRow++;
-                console.debug(`Done compacting. Pushed until ${currentRow}`);
-                break;
-              }
-            }
-          }
 
-          console.debug(
-            `Marking used cells ${currentRow} + ${element.h}, ${currentCol} + ${element.h}`
-          );
-          for (let y = 0; y < element.h; y++) {
-            const row = rows[y + currentRow];
-            for (let x = 0; x < element.w; x++) {
-              row[x + currentCol] = true;
-            }
+        /*console.debug(
+          `Marking used cells ${currentRow} + ${element.h}, ${currentCol} + ${element.h}`
+        );*/
+        for (let y = 0; y < element.h; y++) {
+          const row = rows[y + currentRow];
+          for (let x = 0; x < element.w; x++) {
+            row[x + currentCol] = true;
           }
-          console.debug(`Comitting Final Layout.`);
-          layedOut[i] = {
-            static: false,
-            index: i,
-            startX: currentCol,
-            endX: currentCol + element.w,
-            startY: currentRow,
-            endY: currentRow + element.h,
-          };
-          if (forwardOnly) {
-            currentCol++;
-          } else {
-            currentCol = 0;
-            currentRow = 0;
-          }
-          totalCompacted += tempCurrentRow - currentRow;
-          currentRow = tempCurrentRow;
-          break;
         }
-        currentCol++;
+        // console.debug(`Comitting Final Layout.`);
+        layout[elementIndex] = {
+          static: false,
+          startX: currentCol,
+          endX: currentCol + element.w,
+          startY: currentRow,
+          endY: currentRow + element.h,
+        };
+        if (forwardOnly) {
+          currentCol++;
+        } else {
+          currentCol = 0;
+          currentRow = 0;
+        }
+        currentRow = tempCurrentRow;
+        break;
       }
-    });
-    console.debug(`Compacted ${totalCompacted} rows`);
+      currentCol++;
+    }
+
+    return {
+      currentCol,
+      currentRow,
+      rows,
+      layout,
+    };
   };
 
-export const topLeftForwardOnly: DynamicLayout = topLeftTemplate(true, false);
-
-export const topLeftScanning: DynamicLayout = topLeftTemplate(false, false);
-
-export const topLeftForwardOnlyCompacting: DynamicLayout = topLeftTemplate(
+export const topLeftForwardOnly: DynamicLayoutIteration = topLeftTemplate(
   true,
-  true
+  false
 );
+
+export const topLeftScanning: DynamicLayoutIteration = topLeftTemplate(
+  false,
+  false
+);
+
+export const topLeftForwardOnlyCompacting: DynamicLayoutIteration =
+  topLeftTemplate(true, true);
 
 /**
  * @deprecated This doesn't really make sense. Scanning layouting should never need to re-compact.
  */
-export const topLeftScanningCompacting: DynamicLayout = topLeftTemplate(
-  false,
-  true
-);
+export const topLeftScanningCompacting: DynamicLayoutIteration =
+  topLeftTemplate(false, true);

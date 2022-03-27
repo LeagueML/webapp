@@ -3,6 +3,7 @@ import Grid, {
   links as GridLinks,
   topLeftForwardOnly,
   topLeftForwardOnlyCompacting,
+  topLeftScanning,
 } from "~/components/Grid";
 import GridElement from "~/components/GridElement";
 import Rand from "rand-seed";
@@ -16,11 +17,7 @@ export default function GridTest() {
 
   return (
     <div style={{ width: "100%", height: "100%" }}>
-      <Grid
-        layoutStrategy={topLeftForwardOnlyCompacting}
-        cols={100}
-        rows={undefined}
-      >
+      <Grid dynamicLayoutStrategy={topLeftScanning} cols={100} rows={undefined}>
         <GridElement key="custom-1" x={10} y={50} w={15} h={25}>
           <div
             style={{ backgroundColor: "red", width: "100%", height: "100%" }}

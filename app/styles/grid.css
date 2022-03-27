@@ -14,6 +14,10 @@
   border: 3px solid black;
 }
 
+.grid-element > .loading {
+  visibility: hidden;
+}
+
 .grid > .placeholder {
   background: linear-gradient(50turn, red, white, red);
   border-radius: 5%;

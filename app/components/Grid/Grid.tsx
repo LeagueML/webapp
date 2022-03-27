@@ -1,10 +1,15 @@
-import React from "react";
+import React, { useMemo, useState } from "react";
 import { CSSProperties } from "react";
 import { LinksFunction } from "remix";
 import styles from "~/styles/grid.css";
 import flattenChildren from "react-keyed-flatten-children";
 import { GridProps, LayedOutElement } from "./Grid.types";
-import { calculateLayout } from "./Grid.layout";
+import {
+  createLayoutState,
+  layoutIterate,
+  layoutStaticElement,
+} from "./Grid.layout";
+import { useRenderCount } from "~/utils/useRenderCount";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -39,14 +44,41 @@ export const useContainerDimensions = (myRef: RefObject<HTMLDivElement>) => {
   return dimensions;
 };*/
 export default function Grid(props: GridProps) {
-  if (!props.children) return <div className="grid"></div>;
-  const children = flattenChildren(props.children);
+  const renderCount = useRenderCount();
+  console.log(renderCount);
+  const children = useMemo(
+    () => flattenChildren(props.children),
+    [props.children]
+  );
+  const [layoutState, setLayoutState] = useState(() =>
+    createLayoutState(props.rows, props.cols, children)
+  );
+  const getState = () => layoutState;
 
-  const layout = calculateLayout(
-    props.layoutStrategy,
+  layoutIterate(
+    setLayoutState,
+    getState,
     props.rows,
     props.cols,
-    children
+    children,
+    layoutStaticElement,
+    undefined
+  );
+  console.debug(
+    `Finished static element layout ${layoutState.currentCol}, ${layoutState.currentRow}`
+  );
+
+  layoutIterate(
+    setLayoutState,
+    getState,
+    props.rows,
+    props.cols,
+    children,
+    undefined,
+    props.dynamicLayoutStrategy
+  );
+  console.debug(
+    `Finished static element layout ${layoutState.currentCol}, ${layoutState.currentRow}`
   );
 
   const gridStyle: CSSProperties = {
@@ -54,28 +86,35 @@ export default function Grid(props: GridProps) {
       "repeat(" + props.cols + "," + (100 - props.cols) / props.cols + "%)",
     gridAutoRows: 100 / props.cols + "%",
     gap: "1%",
-    //grid-template-rows: 50px;
-    //grid-template-columns: 50px;
-    //gap: 10px;
   };
 
   return (
     <>
       <div className="grid" style={gridStyle}>
-        {layout.map((l) => (
-          <div
-            key={`${l.startX}/${l.endX}-${l.startY}/${l.endY}`}
-            className={"grid-element" + (l.static ? " static" : "")}
-            style={{
-              gridColumnStart: 1 + l.startX,
-              gridColumnEnd: 1 + l.endX,
-              gridRowStart: 1 + l.startY,
-              gridRowEnd: 1 + l.endY,
-            }}
-          >
-            {children[l.index] ?? <></>}
-          </div>
-        ))}
+        {getState().layout.map((l, i) => {
+          if (l) {
+            return (
+              <div
+                key={`grid-${i}`}
+                className={"grid-element" + (l.static ? " static" : "")}
+                style={{
+                  gridColumnStart: 1 + l.startX,
+                  gridColumnEnd: 1 + l.endX,
+                  gridRowStart: 1 + l.startY,
+                  gridRowEnd: 1 + l.endY,
+                }}
+              >
+                {children[i]}
+              </div>
+            );
+          } else {
+            return (
+              <div key={`grid-${i}`} className="grid-element loading">
+                {children[i]}
+              </div>
+            );
+          }
+        })}
       </div>
     </>
   );

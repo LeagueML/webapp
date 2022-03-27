@@ -1,6 +1,6 @@
-import { PropsWithChildren } from "react";
+import { memo, PropsWithChildren } from "react";
 
-export default function Element(
+function Element(
   props: PropsWithChildren<{
     x: number | undefined;
     y: number | undefined;
@@ -10,3 +10,5 @@ export default function Element(
 ) {
   return <>{props.children}</>;
 }
+
+export default memo(Element);
