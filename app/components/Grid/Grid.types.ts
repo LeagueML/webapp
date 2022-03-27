@@ -1,4 +1,4 @@
-import { PropsWithChildren, ReactChild } from "react";
+import { PropsWithChildren, JSXElementConstructor, ReactElement } from "react";
 
 export type GridProps = PropsWithChildren<{
   rows: number | undefined;
@@ -7,6 +7,7 @@ export type GridProps = PropsWithChildren<{
 }>;
 
 export type LayedOutElement = {
+  element: ReactElement<any, string | JSXElementConstructor<any>>;
   static: boolean;
   startX: number;
   startY: number;
@@ -15,26 +16,27 @@ export type LayedOutElement = {
 };
 
 export type LayoutState = {
-  rows: Boolean[][];
   currentCol: number;
   currentRow: number;
   layout: LayedOutElement[];
 };
 
-export type StaticElement = ReactChild & {
+export type StaticElementProps = DynamicElementProps & {
   x: number;
   y: number;
+};
+
+export type DynamicElementProps = {
   w: number;
   h: number;
 };
 
-export type DynamicElement = ReactChild & {
-  w: number;
-  h: number;
-};
+export type ChildType =
+  | ReactElement<DynamicElementProps, string | JSXElementConstructor<any>>
+  | undefined;
 
 export type StaticLayoutIteration = (
-  element: StaticElement,
+  element: StaticElementProps,
   elementIndex: number,
   state: LayoutState,
   maxRows: number | undefined,
@@ -42,7 +44,7 @@ export type StaticLayoutIteration = (
 ) => LayoutState;
 
 export type DynamicLayoutIteration = (
-  element: DynamicElement,
+  element: DynamicElementProps,
   elementIndex: number,
   state: LayoutState,
   maxRows: number | undefined,

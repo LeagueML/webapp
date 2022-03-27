@@ -3,7 +3,12 @@ import { CSSProperties } from "react";
 import { LinksFunction } from "remix";
 import styles from "~/styles/grid.css";
 import flattenChildren from "react-keyed-flatten-children";
-import { GridProps, LayedOutElement } from "./Grid.types";
+import {
+  DynamicElementProps,
+  GridProps,
+  LayedOutElement,
+  StaticElementProps,
+} from "./Grid.types";
 import {
   createLayoutState,
   layoutIterate,
@@ -44,42 +49,69 @@ export const useContainerDimensions = (myRef: RefObject<HTMLDivElement>) => {
   return dimensions;
 };*/
 export default function Grid(props: GridProps) {
-  const renderCount = useRenderCount();
-  console.log(renderCount);
+  // calculate the possible valid children
   const children = useMemo(
-    () => flattenChildren(props.children),
+    () =>
+      flattenChildren(props.children)
+        .map((x) => {
+          if (!x || !React.isValidElement<DynamicElementProps>(x))
+            return undefined;
+
+          // not sure whether further validating the props is needed.
+          if (!x.props || !x.props.w || !x.props.h) return undefined;
+          return x;
+        })
+        .filter((x) => x !== undefined),
     [props.children]
   );
-  const [layoutState, setLayoutState] = useState(() =>
-    createLayoutState(props.rows, props.cols, children)
-  );
-  const getState = () => layoutState;
 
-  layoutIterate(
-    setLayoutState,
-    getState,
-    props.rows,
-    props.cols,
-    children,
-    layoutStaticElement,
-    undefined
-  );
-  console.debug(
-    `Finished static element layout ${layoutState.currentCol}, ${layoutState.currentRow}`
+  // thanks https://stackoverflow.com/questions/11731072/dividing-an-array-by-filter-function
+  function partition<T>(array: T[], isValid: (element: T) => Boolean): T[][] {
+    return array.reduce<T[][]>(
+      ([pass, fail], elem) =>
+        isValid(elem) ? [[...pass, elem], fail] : [pass, [...fail, elem]],
+      [[], []]
+    );
+  }
+
+  // partition children into dynamic and static
+  const [staticElements, dynamicElements] = useMemo(
+    () =>
+      partition(
+        children,
+        (x) =>
+          React.isValidElement<StaticElementProps>(x) &&
+          !!x.props.x &&
+          !!x.props.y
+      ),
+    [children]
   );
 
-  layoutIterate(
-    setLayoutState,
-    getState,
-    props.rows,
-    props.cols,
-    children,
-    undefined,
-    props.dynamicLayoutStrategy
+  const initialState = useMemo(
+    () => createLayoutState(props.rows, props.cols, children),
+    [props.rows, props.cols, children]
   );
-  console.debug(
-    `Finished static element layout ${layoutState.currentCol}, ${layoutState.currentRow}`
+
+  const staticLayout = useMemo(
+    () =>
+      staticElements.reduce(
+        (p, c) => layoutStaticElement(c as any, p, props.rows, props.cols),
+        initialState
+      ),
+    [staticElements, initialState, props.rows, props.cols]
   );
+
+  /*
+  const dynamicLayout = useMemo(
+    () =>
+      dynamicElements.reduce(
+        (p, c) => layoutStaticElement(c as any, p, props.rows, props.cols),
+        staticLayout
+      ),
+    [dynamicElements, staticLayout, props.rows, props.cols]
+  );*/
+
+  const layout = staticLayout.layout;
 
   const gridStyle: CSSProperties = {
     gridTemplateColumns:
@@ -91,30 +123,20 @@ export default function Grid(props: GridProps) {
   return (
     <>
       <div className="grid" style={gridStyle}>
-        {getState().layout.map((l, i) => {
-          if (l) {
-            return (
-              <div
-                key={`grid-${i}`}
-                className={"grid-element" + (l.static ? " static" : "")}
-                style={{
-                  gridColumnStart: 1 + l.startX,
-                  gridColumnEnd: 1 + l.endX,
-                  gridRowStart: 1 + l.startY,
-                  gridRowEnd: 1 + l.endY,
-                }}
-              >
-                {children[i]}
-              </div>
-            );
-          } else {
-            return (
-              <div key={`grid-${i}`} className="grid-element loading">
-                {children[i]}
-              </div>
-            );
-          }
-        })}
+        {layout.map((l, i) => (
+          <div
+            key={`grid-${i}`}
+            className={"grid-element" + (l.static ? " static" : "")}
+            style={{
+              gridColumnStart: 1 + l.startX,
+              gridColumnEnd: 1 + l.endX,
+              gridRowStart: 1 + l.startY,
+              gridRowEnd: 1 + l.endY,
+            }}
+          >
+            {l.element}
+          </div>
+        ))}
       </div>
     </>
   );

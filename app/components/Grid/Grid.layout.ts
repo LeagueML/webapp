@@ -1,23 +1,22 @@
-import React from "react";
+import React, { ReactElement, JSXElementConstructor } from "react";
 import { ReactChild } from "react";
 import {
+  ChildType,
   DynamicLayoutIteration,
-  LayedOutElement,
   LayoutState,
-  StaticElement,
+  StaticElementProps,
   StaticLayoutIteration,
 } from "./Grid.types";
 
 export function createLayoutState(
   maxRows: number | undefined,
   maxCols: number,
-  children: readonly ReactChild[]
+  children: readonly ChildType[]
 ): LayoutState {
   return {
-    rows: [],
     currentCol: 0,
     currentRow: 0,
-    layout: new Array(children.length),
+    layout: [],
   };
 }
 
@@ -62,48 +61,40 @@ export function layoutIterate(
 }
 
 export function layoutStaticElement(
-  element: StaticElement,
-  elementIndex: number,
+  element: ReactElement<
+    StaticElementProps,
+    string | JSXElementConstructor<any>
+  >,
   state: LayoutState,
   maxRows: number | undefined,
   maxCols: number
 ): LayoutState {
-  console.debug(`Laying out static element ${elementIndex}`);
-  const rows = [...state.rows].map((r, i) => [...state.rows[i]]);
+  const props = element.props;
   const layout = [...state.layout];
   // check for static element going out of bounds
-  if (maxRows && element.y + element.h > maxRows) {
+  if (maxRows && props.y + props.h > maxRows) {
     console.warn(
-      `rejecting static element @ ${element.x}, ${element.y} because it's too tall`
+      `rejecting static element @ ${props.x}, ${props.y} because it's too tall`
     );
   }
 
-  // lengthen work area to fit child
-  while (rows.length < element.y + element.h) {
-    rows.push(new Array(maxCols));
-  }
-
-  // set used fields to true
-  for (let y = 0; y < element.h; y++) {
-    const row = rows[y + element.y];
-    for (let x = 0; x < element.w; x++) {
-      if (row[x + element.x] === true)
-        console.debug(`Detected Overlap at ${element.x + x}, ${element.y + y}`);
-      row[x + element.x] = true;
-    }
+  if (props.x + props.w > maxCols) {
+    console.warn(
+      `rejecting static element @ ${props.x}, ${props.y} because it's too wide`
+    );
   }
 
   // element is fully layed out. Export
-  layout[elementIndex] = {
+  layout.push({
+    element: element,
     static: true,
-    startX: element.x,
-    endX: element.x + element.w,
-    startY: element.y,
-    endY: element.y + element.h,
-  };
+    startX: props.x,
+    endX: props.x + props.w,
+    startY: props.y,
+    endY: props.y + props.h,
+  });
 
   return {
-    rows: rows,
     currentCol: state.currentCol,
     currentRow: state.currentRow,
     layout: layout,
