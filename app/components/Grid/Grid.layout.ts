@@ -1,11 +1,9 @@
-import React, { ReactElement, JSXElementConstructor } from "react";
-import { ReactChild } from "react";
+import { ReactElement, JSXElementConstructor } from "react";
 import {
   ChildType,
-  DynamicLayoutIteration,
+  LayedOutElement,
   LayoutState,
   StaticElementProps,
-  StaticLayoutIteration,
 } from "./Grid.types";
 
 export function createLayoutState(
@@ -18,46 +16,6 @@ export function createLayoutState(
     currentRow: 0,
     layout: [],
   };
-}
-
-export function layoutIterate(
-  setState: (fn: (state: LayoutState) => LayoutState) => void,
-  getState: () => LayoutState,
-  maxRows: number | undefined,
-  maxCols: number,
-  children: readonly ReactChild[],
-  staticElement: StaticLayoutIteration | undefined,
-  dynamicElement: DynamicLayoutIteration | undefined
-) {
-  children.forEach((e: ReactChild, i: number) => {
-    if (getState().layout[i]) {
-      // console.debug(`Skipping Already layed out ${i}`);
-      return;
-    }
-    if (!React.isValidElement(e)) return;
-
-    if (!e) {
-      console.log("Skipping empty layout element");
-      return;
-    }
-
-    const element = e.props;
-
-    if (!("h" in element && "w" in element)) {
-      throw new Error("skipping invalid child. No width or height.");
-    }
-
-    // if static element
-    if ("x" in element && element.x && "y" in element && element.y) {
-      if (staticElement) {
-        setState((s) => staticElement(element, i, s, maxRows, maxCols));
-      }
-    } else {
-      if (dynamicElement) {
-        setState((s) => dynamicElement(element, i, s, maxRows, maxCols));
-      }
-    }
-  });
 }
 
 export function layoutStaticElement(
@@ -99,4 +57,17 @@ export function layoutStaticElement(
     currentRow: state.currentRow,
     layout: layout,
   };
+}
+
+export function checkCollision(
+  elements: readonly LayedOutElement[],
+  toCheck: LayedOutElement
+): Boolean {
+  return elements.some(
+    (element) =>
+      element.startX <= toCheck.endX &&
+      element.endX >= toCheck.startX &&
+      element.startY <= toCheck.endY &&
+      element.endY >= toCheck.startY
+  );
 }

@@ -6,48 +6,13 @@ import flattenChildren from "react-keyed-flatten-children";
 import {
   DynamicElementProps,
   GridProps,
-  LayedOutElement,
   StaticElementProps,
 } from "./Grid.types";
-import {
-  createLayoutState,
-  layoutIterate,
-  layoutStaticElement,
-} from "./Grid.layout";
-import { useRenderCount } from "~/utils/useRenderCount";
-
+import { createLayoutState, layoutStaticElement } from "./Grid.layout";
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
-/*
-export const useContainerDimensions = (myRef: RefObject<HTMLDivElement>) => {
-  const getDimensions = () => ({
-    width: myRef!.current!.offsetWidth,
-    height: myRef!.current!.offsetHeight,
-  });
-
-  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
-
-  useEffect(() => {
-    const handleResize = () => {
-      setDimensions(getDimensions());
-    };
-
-    if (myRef.current) {
-      setDimensions(getDimensions());
-    }
-
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [myRef]);
-
-  return dimensions;
-};*/
 export default function Grid(props: GridProps) {
   // calculate the possible valid children
   const children = useMemo(
@@ -87,31 +52,32 @@ export default function Grid(props: GridProps) {
     [children]
   );
 
+  const { rows, cols, dynamicLayoutStrategy } = props;
+
   const initialState = useMemo(
-    () => createLayoutState(props.rows, props.cols, children),
-    [props.rows, props.cols, children]
+    () => createLayoutState(rows, cols, children),
+    [rows, cols, children]
   );
 
   const staticLayout = useMemo(
     () =>
       staticElements.reduce(
-        (p, c) => layoutStaticElement(c as any, p, props.rows, props.cols),
+        (p, c) => layoutStaticElement(c as any, p, rows, cols),
         initialState
       ),
-    [staticElements, initialState, props.rows, props.cols]
+    [staticElements, initialState, rows, cols]
   );
 
-  /*
   const dynamicLayout = useMemo(
     () =>
       dynamicElements.reduce(
-        (p, c) => layoutStaticElement(c as any, p, props.rows, props.cols),
+        (p, c) => dynamicLayoutStrategy(c as any, p, rows, cols),
         staticLayout
       ),
-    [dynamicElements, staticLayout, props.rows, props.cols]
-  );*/
+    [dynamicElements, staticLayout, rows, cols, dynamicLayoutStrategy]
+  );
 
-  const layout = staticLayout.layout;
+  const layout = dynamicLayout.layout;
 
   const gridStyle: CSSProperties = {
     gridTemplateColumns:

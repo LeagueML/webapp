@@ -36,7 +36,10 @@ export type ChildType =
   | undefined;
 
 export type StaticLayoutIteration = (
-  element: StaticElementProps,
+  element: ReactElement<
+    StaticElementProps,
+    string | JSXElementConstructor<any>
+  >,
   elementIndex: number,
   state: LayoutState,
   maxRows: number | undefined,
@@ -44,8 +47,10 @@ export type StaticLayoutIteration = (
 ) => LayoutState;
 
 export type DynamicLayoutIteration = (
-  element: DynamicElementProps,
-  elementIndex: number,
+  element: ReactElement<
+    DynamicElementProps,
+    string | JSXElementConstructor<any>
+  >,
   state: LayoutState,
   maxRows: number | undefined,
   maxCols: number
