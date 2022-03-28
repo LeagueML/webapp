@@ -12,18 +12,18 @@ export default function GridTest() {
 
   return (
     <div style={{ width: "100%", height: "100%" }}>
-      <Grid dynamicLayoutStrategy={topLeftScanning} cols={100} rows={undefined}>
-        <GridElement key="custom-1" x={10} y={50} w={15} h={25}>
+      <Grid dynamicLayoutStrategy={topLeftScanning} cols={50} rows={undefined}>
+        <GridElement key="custom-1" x={5} y={25} w={8} h={12}>
           <div
             style={{ backgroundColor: "red", width: "100%", height: "100%" }}
           ></div>
         </GridElement>
-        <GridElement key="custom-2" x={10} y={15} w={15} h={20}>
+        <GridElement key="custom-2" x={5} y={8} w={8} h={10}>
           <div
             style={{ backgroundColor: "green", width: "100%", height: "100%" }}
           ></div>
         </GridElement>
-        <GridElement key="custom-3" x={40} y={15} w={35} h={40}>
+        <GridElement key="custom-3" x={20} y={8} w={18} h={20}>
           <div
             style={{ backgroundColor: "purple", width: "100%", height: "100%" }}
           ></div>
@@ -48,8 +48,8 @@ export default function GridTest() {
             key={"generated-" + i}
             x={undefined}
             y={undefined}
-            w={5 + Math.floor(myrng.next() * 35)}
-            h={5 + Math.floor(myrng.next() * 25)}
+            w={2 + Math.floor(myrng.next() * 15)}
+            h={2 + Math.floor(myrng.next() * 5)}
           >
             <div
               key={"generated-div-" + i}
