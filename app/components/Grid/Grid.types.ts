@@ -16,7 +16,6 @@ export type LayedOutElement = {
 };
 
 export type LayoutState = {
-  marked: Boolean[][];
   layout: LayedOutElement[];
 };
 
@@ -35,10 +34,10 @@ export type ChildType =
   | undefined;
 
 export type DynamicLayout = (
-  elements: (React.ReactElement<
+  elements: React.ReactElement<
     DynamicElementProps,
     string | React.JSXElementConstructor<any>
-  >)[],
+  >[],
   state: LayoutState,
   maxRows: number | undefined,
   maxCols: number

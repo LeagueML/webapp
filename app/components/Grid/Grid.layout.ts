@@ -12,7 +12,6 @@ export function createLayoutState(
   children: readonly ChildType[]
 ): LayoutState {
   return {
-    marked: [new Array(maxCols)],
     layout: [],
   };
 }
@@ -27,7 +26,6 @@ export function layoutStaticElements(
   maxCols: number
 ): LayoutState {
   const layout = [...state.layout];
-  const marked = state.marked.map((x) => [...x]);
 
   elements.forEach((element) => {
     const props = element.props;
@@ -54,12 +52,10 @@ export function layoutStaticElements(
       endY: props.y + props.h,
     };
     layout.push(e);
-    mark(marked, e);
   });
 
   return {
     layout,
-    marked,
   };
 }
 

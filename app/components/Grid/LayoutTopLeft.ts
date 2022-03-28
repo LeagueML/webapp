@@ -17,7 +17,10 @@ export const topLeftScanning = (
   maxCols: number
 ): LayoutState => {
   const layout = [...state.layout];
-  const marked = state.marked.map((x) => [...x]);
+  const marked: (Boolean[] | undefined)[] = [new Array(maxCols)];
+
+  layout.forEach((e) => mark(marked as any, e));
+
   let startRow = 0;
 
   elements.forEach((element) => {
@@ -38,6 +41,9 @@ export const topLeftScanning = (
       if (currentCol + props.w > maxCols) {
         currentRow++;
         startRow = Math.max(startRow, currentRow - lookbehindWindow);
+        if (startRow > 1) {
+          marked[startRow - 1] = undefined;
+        }
         currentCol = 0;
       }
 
@@ -55,11 +61,11 @@ export const topLeftScanning = (
         endY: currentRow + props.h,
       };
 
-      const fit = checkNoCollision(marked, layedOutElement);
+      const fit = checkNoCollision(marked as any, layedOutElement);
       if (fit) {
         // console.debug(`Comitting Final Layout.`);
         layout.push(layedOutElement);
-        mark(marked, layedOutElement);
+        mark(marked as any, layedOutElement);
         break;
       }
       currentCol++;
@@ -69,6 +75,5 @@ export const topLeftScanning = (
   // console.debug(`Ending Layout at ${currentCol}, ${currentRow}`);
   return {
     layout,
-    marked,
   };
 };
