@@ -16,8 +16,7 @@ export type LayedOutElement = {
 };
 
 export type LayoutState = {
-  currentCol: number;
-  currentRow: number;
+  marked: Boolean[][];
   layout: LayedOutElement[];
 };
 

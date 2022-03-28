@@ -59,6 +59,8 @@ export default function Grid(props: GridProps) {
     [rows, cols, children]
   );
 
+  console.debug(`static layout`);
+
   const staticLayout = useMemo(
     () =>
       staticElements.reduce(
@@ -68,6 +70,8 @@ export default function Grid(props: GridProps) {
     [staticElements, initialState, rows, cols]
   );
 
+  console.debug(`Dynamic Layout`);
+
   const dynamicLayout = useMemo(
     () =>
       dynamicElements.reduce(
@@ -76,6 +80,8 @@ export default function Grid(props: GridProps) {
       ),
     [dynamicElements, staticLayout, rows, cols, dynamicLayoutStrategy]
   );
+
+  console.debug(`Done`);
 
   const layout = dynamicLayout.layout;
 

@@ -12,8 +12,7 @@ export function createLayoutState(
   children: readonly ChildType[]
 ): LayoutState {
   return {
-    currentCol: 0,
-    currentRow: 0,
+    marked: [new Array(maxCols)],
     layout: [],
   };
 }
@@ -29,6 +28,7 @@ export function layoutStaticElement(
 ): LayoutState {
   const props = element.props;
   const layout = [...state.layout];
+  const marked = state.marked.map((x) => [...x]);
   // check for static element going out of bounds
   if (maxRows && props.y + props.h > maxRows) {
     console.warn(
@@ -43,31 +43,45 @@ export function layoutStaticElement(
   }
 
   // element is fully layed out. Export
-  layout.push({
+  const e = {
     element: element,
     static: true,
     startX: props.x,
     endX: props.x + props.w,
     startY: props.y,
     endY: props.y + props.h,
-  });
+  };
+  layout.push(e);
+  mark(marked, e);
 
   return {
-    currentCol: state.currentCol,
-    currentRow: state.currentRow,
-    layout: layout,
+    layout,
+    marked,
   };
 }
 
 export function checkCollision(
-  elements: readonly LayedOutElement[],
+  marked: Boolean[][],
   toCheck: LayedOutElement
 ): Boolean {
-  return elements.some(
-    (element) =>
-      element.startX <= toCheck.endX &&
-      element.endX >= toCheck.startX &&
-      element.startY <= toCheck.endY &&
-      element.endY >= toCheck.startY
-  );
+  for (let y = toCheck.startY; y < toCheck.endY; y++) {
+    if (marked.length <= y) continue;
+    const temp = marked[y];
+    for (let x = toCheck.startX; x < toCheck.endX; x++) {
+      if (temp[x]) return true;
+    }
+  }
+  return false;
+}
+
+export function mark(marked: Boolean[][], element: LayedOutElement) {
+  for (let y = element.startY; y < element.endY; y++) {
+    while (marked.length <= y) {
+      marked.push(new Array(marked[0].length));
+    }
+    const temp = marked[y];
+    for (let x = element.startX; x < element.endX; x++) {
+      temp[x] = true;
+    }
+  }
 }
