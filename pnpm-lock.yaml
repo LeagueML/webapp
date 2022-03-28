@@ -44,7 +44,7 @@ devDependencies:
   eslint: 8.11.0
   npm-run-all: 4.1.5
   typescript: 4.6.2
-  wrangler: 0.0.23
+  wrangler: 0.0.24
 
 packages:
 
@@ -5512,8 +5512,8 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: true
 
-  /wrangler/0.0.23:
-    resolution: {integrity: sha512-MfWgHKsHlfF2jMo44RBO3pkifYl/tIZQGs4nuhQGWgcKEx0c2CO1AYoNKbBQxQHHx5FelyV6SvuL8xkv2nQb/Q==}
+  /wrangler/0.0.24:
+    resolution: {integrity: sha512-rvDAy9mz4PJpp38/uUOd9Kcg8lL+1TRPaCiOp8TgN1h9V+NNSog1oCJ0KbXhT5rxuC6FSXUzUl06zirzoC0BXg==}
     engines: {node: '>=16.7.0'}
     hasBin: true
     dependencies:

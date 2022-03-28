@@ -60,7 +60,7 @@ export function layoutStaticElement(
   };
 }
 
-export function checkCollision(
+export function checkNoCollision(
   marked: Boolean[][],
   toCheck: LayedOutElement
 ): Boolean {
@@ -68,10 +68,10 @@ export function checkCollision(
     if (marked.length <= y) continue;
     const temp = marked[y];
     for (let x = toCheck.startX; x < toCheck.endX; x++) {
-      if (temp[x]) return true;
+      if (temp[x]) return false;
     }
   }
-  return false;
+  return true;
 }
 
 export function mark(marked: Boolean[][], element: LayedOutElement) {
