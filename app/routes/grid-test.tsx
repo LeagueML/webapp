@@ -48,8 +48,8 @@ export default function GridTest() {
             key={"generated-" + i}
             x={undefined}
             y={undefined}
-            w={2 + Math.floor(myrng.next() * 15)}
-            h={2 + Math.floor(myrng.next() * 5)}
+            w={1 + Math.floor(myrng.next() * 5)}
+            h={1 + Math.floor(myrng.next() * 3)}
           >
             <div
               key={"generated-div-" + i}

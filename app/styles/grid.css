@@ -6,12 +6,12 @@
 }
 
 .grid > .grid-element {
-  border-radius: 10px;
   overflow: hidden;
+  box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5);
+  border-radius: 5px;
 }
 
 .grid > .static {
-  border: 3px solid black;
 }
 
 .grid-element > .loading {
@@ -19,6 +19,6 @@
 }
 
 .grid > .placeholder {
-  background: linear-gradient(50turn, red, white, red);
-  border-radius: 5%;
+  background: rgba(98, 98, 98, 0.2);
+  box-shadow: none;
 }
