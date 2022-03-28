@@ -1,0 +1,32 @@
+.breakpoint-container {
+  width: 640px;
+  height: 640px;
+}
+
+@media only screen and (min-width: 768px) {
+  .breakpoint-container {
+    width: 768px;
+    height: 768px;
+  }
+}
+
+@media only screen and (min-width: 800px) {
+  .breakpoint-container {
+    width: 800px;
+    height: 800px;
+  }
+}
+
+@media only screen and (min-width: 900px) {
+  .breakpoint-container {
+    width: 900px;
+    height: 900px;
+  }
+}
+
+@media only screen and (min-width: 1080px) {
+  .breakpoint-container {
+    width: 1080px;
+    height: 1080px;
+  }
+}

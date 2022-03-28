@@ -61,7 +61,7 @@ function Grid(props: GridProps) {
   const gridStyle: CSSProperties = {
     gridTemplateColumns:
       "repeat(" + props.cols + "," + (100 - props.cols) / props.cols + "%)",
-    gridAutoRows: 100 / props.cols + "%",
+    gridAutoRows: (100 - props.cols) / props.cols + "%",
     gap: "1%",
   };
 

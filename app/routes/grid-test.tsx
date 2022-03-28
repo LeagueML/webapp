@@ -1,17 +1,20 @@
 import { LinksFunction } from "remix";
-import Grid, { links as GridLinks, topLeftScanning } from "~/components/Grid";
+import Grid, { links as GridLinks } from "~/components/Grid";
 import GridElement from "~/components/GridElement";
 import Rand from "rand-seed";
+import BreakpointContainer, {
+  links as BreakpointContainerLinks,
+} from "~/components/BreakpointContainer";
 
 export const links: LinksFunction = () => {
-  return [...GridLinks()];
+  return [...GridLinks(), ...BreakpointContainerLinks()];
 };
 
 export default function GridTest() {
   var myrng = new Rand("Apples");
 
   return (
-    <div style={{ width: "100%", height: "100%" }}>
+    <BreakpointContainer>
       <Grid cols={25} rows={undefined}>
         <GridElement key="custom-1" x={2} y={12} w={4} h={6}>
           <div
@@ -70,6 +73,6 @@ export default function GridTest() {
           </GridElement>
         ))}
       </Grid>
-    </div>
+    </BreakpointContainer>
   );
 }
