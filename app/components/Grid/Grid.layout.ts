@@ -1,31 +1,20 @@
 import { ReactElement, JSXElementConstructor } from "react";
 import {
-  ChildType,
   LayedOutElement,
+  LayoutKind,
   LayoutState,
   StaticElementProps,
 } from "./Grid.types";
-
-export function createLayoutState(
-  maxRows: number | undefined,
-  maxCols: number,
-  children: readonly ChildType[]
-): LayoutState {
-  return {
-    layout: [],
-  };
-}
 
 export function layoutStaticElements(
   elements: ReactElement<
     StaticElementProps,
     string | JSXElementConstructor<any>
   >[],
-  state: LayoutState,
   maxRows: number | undefined,
   maxCols: number
 ): LayoutState {
-  const layout = [...state.layout];
+  const layout: LayedOutElement[] = [];
 
   elements.forEach((element) => {
     const props = element.props;
@@ -45,7 +34,7 @@ export function layoutStaticElements(
     // element is fully layed out. Export
     const e = {
       element: element,
-      static: true,
+      kind: LayoutKind.Static,
       startX: props.x,
       endX: props.x + props.w,
       startY: props.y,

@@ -3,6 +3,7 @@ import { checkNoCollision, mark } from "./Grid.layout";
 import {
   DynamicElementProps,
   LayedOutElement,
+  LayoutKind,
   LayoutState,
 } from "./Grid.types";
 
@@ -15,9 +16,9 @@ export const topLeftScanning = (
   state: LayoutState,
   maxRows: number | undefined,
   maxCols: number
-): LayoutState => {
+): LayoutState & { marked: Boolean[][] } => {
   const layout = [...state.layout];
-  const marked: (Boolean[] | undefined)[] = [new Array(maxCols)];
+  const marked: Boolean[][] = [new Array(maxCols)];
 
   layout.forEach((e) => mark(marked as any, e));
 
@@ -41,9 +42,7 @@ export const topLeftScanning = (
       if (currentCol + props.w > maxCols) {
         currentRow++;
         startRow = Math.max(startRow, currentRow - lookbehindWindow);
-        if (startRow > 1) {
-          marked[startRow - 1] = undefined;
-        }
+        // TODO: Throw away unused row again (if startRow > 1 -> marked[startRow - 1] unused)
         currentCol = 0;
       }
 
@@ -54,7 +53,7 @@ export const topLeftScanning = (
 
       const layedOutElement: LayedOutElement = {
         element: element,
-        static: false,
+        kind: LayoutKind.Dynamic,
         startX: currentCol,
         endX: currentCol + props.w,
         startY: currentRow,
@@ -75,5 +74,26 @@ export const topLeftScanning = (
   // console.debug(`Ending Layout at ${currentCol}, ${currentRow}`);
   return {
     layout,
+    marked,
   };
 };
+
+export function getPlaceholders(marked: Boolean[][]): LayedOutElement[] {
+  const layout = [];
+  for (let y = 0; y < marked.length; y++) {
+    const temp = marked[y];
+    for (let x = 0; x < temp.length; x++) {
+      if (!temp[x]) {
+        layout.push({
+          element: undefined,
+          kind: LayoutKind.Placeholder,
+          startX: x,
+          endX: x + 1,
+          startY: y,
+          endY: y + 1,
+        });
+      }
+    }
+  }
+  return layout;
+}

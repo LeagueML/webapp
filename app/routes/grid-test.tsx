@@ -12,18 +12,18 @@ export default function GridTest() {
 
   return (
     <div style={{ width: "100%", height: "100%" }}>
-      <Grid dynamicLayoutStrategy={topLeftScanning} cols={50} rows={undefined}>
-        <GridElement key="custom-1" x={5} y={25} w={8} h={12}>
+      <Grid cols={25} rows={undefined}>
+        <GridElement key="custom-1" x={2} y={12} w={4} h={6}>
           <div
             style={{ backgroundColor: "red", width: "100%", height: "100%" }}
           ></div>
         </GridElement>
-        <GridElement key="custom-2" x={5} y={8} w={8} h={10}>
+        <GridElement key="custom-2" x={2} y={4} w={4} h={5}>
           <div
             style={{ backgroundColor: "green", width: "100%", height: "100%" }}
           ></div>
         </GridElement>
-        <GridElement key="custom-3" x={20} y={8} w={18} h={20}>
+        <GridElement key="custom-3" x={10} y={4} w={9} h={10}>
           <div
             style={{ backgroundColor: "purple", width: "100%", height: "100%" }}
           ></div>
