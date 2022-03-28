@@ -74,10 +74,7 @@ export default function Grid(props: GridProps) {
 
   const dynamicLayout = useMemo(
     () =>
-      dynamicElements.reduce(
-        (p, c) => dynamicLayoutStrategy(c as any, p, rows, cols),
-        staticLayout
-      ),
+      dynamicLayoutStrategy(dynamicElements as any, staticLayout, rows, cols),
     [dynamicElements, staticLayout, rows, cols, dynamicLayoutStrategy]
   );
 

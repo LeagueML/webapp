@@ -3,7 +3,7 @@ import { PropsWithChildren, JSXElementConstructor, ReactElement } from "react";
 export type GridProps = PropsWithChildren<{
   rows: number | undefined;
   cols: number;
-  dynamicLayoutStrategy: DynamicLayoutIteration;
+  dynamicLayoutStrategy: DynamicLayout;
 }>;
 
 export type LayedOutElement = {
@@ -34,22 +34,11 @@ export type ChildType =
   | ReactElement<DynamicElementProps, string | JSXElementConstructor<any>>
   | undefined;
 
-export type StaticLayoutIteration = (
-  element: ReactElement<
-    StaticElementProps,
-    string | JSXElementConstructor<any>
-  >,
-  elementIndex: number,
-  state: LayoutState,
-  maxRows: number | undefined,
-  maxCols: number
-) => LayoutState;
-
-export type DynamicLayoutIteration = (
-  element: ReactElement<
+export type DynamicLayout = (
+  elements: (React.ReactElement<
     DynamicElementProps,
-    string | JSXElementConstructor<any>
-  >,
+    string | React.JSXElementConstructor<any>
+  >)[],
   state: LayoutState,
   maxRows: number | undefined,
   maxCols: number
