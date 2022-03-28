@@ -1,32 +1,57 @@
-.breakpoint-container {
-  width: 640px;
-  height: 640px;
+@media only screen and (max-width: 449px) {
+  .breakpoint-container > * {
+    visibility: hidden;
+  }
+
+  .breakpoint-container {
+    background-color: red;
+  }
+}
+
+@media only screen and (min-width: 450px) {
+  .breakpoint-container {
+    visibility: visible;
+    width: 450px;
+    height: 450px;
+  }
+}
+
+@media only screen and (min-width: 600px) {
+  .breakpoint-container {
+    visibility: visible;
+    width: 600px;
+    height: 600px;
+  }
 }
 
 @media only screen and (min-width: 768px) {
   .breakpoint-container {
+    visibility: visible;
     width: 768px;
     height: 768px;
   }
 }
 
-@media only screen and (min-width: 800px) {
+@media only screen and (min-width: 889px) {
   .breakpoint-container {
-    width: 800px;
-    height: 800px;
+    visibility: visible;
+    width: 889px;
+    height: 889px;
   }
 }
 
-@media only screen and (min-width: 900px) {
+@media only screen and (min-width: 1200px) {
   .breakpoint-container {
-    width: 900px;
-    height: 900px;
+    visibility: visible;
+    width: 1200px;
+    height: 1200px;
   }
 }
 
-@media only screen and (min-width: 1080px) {
+@media only screen and (min-width: 1600px) {
   .breakpoint-container {
-    width: 1080px;
-    height: 1080px;
+    visibility: visible;
+    width: 1600px;
+    height: 1600px;
   }
 }
