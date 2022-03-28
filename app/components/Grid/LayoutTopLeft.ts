@@ -6,6 +6,7 @@ import {
   LayoutState,
 } from "./Grid.types";
 
+const lookbehindWindow = 30;
 export const topLeftScanning = (
   elements: ReactElement<
     DynamicElementProps,
@@ -17,6 +18,7 @@ export const topLeftScanning = (
 ): LayoutState => {
   const layout = [...state.layout];
   const marked = state.marked.map((x) => [...x]);
+  let startRow = 0;
 
   elements.forEach((element) => {
     const props = element.props;
@@ -28,13 +30,14 @@ export const topLeftScanning = (
     }
 
     let currentCol = 0;
-    let currentRow = 0;
+    let currentRow = startRow;
 
     // retry layouting until we either find a spot or reject the element
     while (true) {
       // check whether this element will fit at the end of the current row
       if (currentCol + props.w > maxCols) {
         currentRow++;
+        startRow = Math.max(startRow, currentRow - lookbehindWindow);
         currentCol = 0;
       }
 
