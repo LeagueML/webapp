@@ -17,42 +17,45 @@ export function createLayoutState(
   };
 }
 
-export function layoutStaticElement(
-  element: ReactElement<
+export function layoutStaticElements(
+  elements: ReactElement<
     StaticElementProps,
     string | JSXElementConstructor<any>
-  >,
+  >[],
   state: LayoutState,
   maxRows: number | undefined,
   maxCols: number
 ): LayoutState {
-  const props = element.props;
   const layout = [...state.layout];
   const marked = state.marked.map((x) => [...x]);
-  // check for static element going out of bounds
-  if (maxRows && props.y + props.h > maxRows) {
-    console.warn(
-      `rejecting static element @ ${props.x}, ${props.y} because it's too tall`
-    );
-  }
 
-  if (props.x + props.w > maxCols) {
-    console.warn(
-      `rejecting static element @ ${props.x}, ${props.y} because it's too wide`
-    );
-  }
+  elements.forEach((element) => {
+    const props = element.props;
+    // check for static element going out of bounds
+    if (maxRows && props.y + props.h > maxRows) {
+      console.warn(
+        `rejecting static element @ ${props.x}, ${props.y} because it's too tall`
+      );
+    }
 
-  // element is fully layed out. Export
-  const e = {
-    element: element,
-    static: true,
-    startX: props.x,
-    endX: props.x + props.w,
-    startY: props.y,
-    endY: props.y + props.h,
-  };
-  layout.push(e);
-  mark(marked, e);
+    if (props.x + props.w > maxCols) {
+      console.warn(
+        `rejecting static element @ ${props.x}, ${props.y} because it's too wide`
+      );
+    }
+
+    // element is fully layed out. Export
+    const e = {
+      element: element,
+      static: true,
+      startX: props.x,
+      endX: props.x + props.w,
+      startY: props.y,
+      endY: props.y + props.h,
+    };
+    layout.push(e);
+    mark(marked, e);
+  });
 
   return {
     layout,

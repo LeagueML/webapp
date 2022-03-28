@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { CSSProperties } from "react";
 import { LinksFunction } from "remix";
 import styles from "~/styles/grid.css";
@@ -8,7 +8,7 @@ import {
   GridProps,
   StaticElementProps,
 } from "./Grid.types";
-import { createLayoutState, layoutStaticElement } from "./Grid.layout";
+import { createLayoutState, layoutStaticElements } from "./Grid.layout";
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
@@ -62,11 +62,7 @@ export default function Grid(props: GridProps) {
   console.debug(`static layout`);
 
   const staticLayout = useMemo(
-    () =>
-      staticElements.reduce(
-        (p, c) => layoutStaticElement(c as any, p, rows, cols),
-        initialState
-      ),
+    () => layoutStaticElements(staticElements as any, initialState, rows, cols),
     [staticElements, initialState, rows, cols]
   );
 
