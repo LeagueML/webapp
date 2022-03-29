@@ -18,7 +18,10 @@ export const topLeftScanning = (
   maxCols: number
 ): LayoutState & { marked: Boolean[][] } => {
   const layout = [...state.layout];
-  const marked: Boolean[][] = [new Array(maxCols)];
+  const marked: Boolean[][] = Array.from(
+    { length: maxCols },
+    (_e, _i) => new Array(maxCols)
+  );
 
   layout.forEach((e) => mark(marked as any, e));
 
